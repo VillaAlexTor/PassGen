@@ -1,179 +1,242 @@
 import random 
 import string
+import tkinter as tk
+from tkinter import messagebox
+import tkinter.ttk as ttk
 
-
-# Validacion de entrada
-def obtener_longitud():
-    while True:
-        try:
-            longitud = int(input("Ingrese el tamanio de la contrasenia (8-128): "))
-            if 8 <= longitud <= 128:
-                return longitud
-            else:
-                print("La longitud debe estar entre 8 y 128 caracteres")
-        except ValueError:
-            print("Por favor, ingrese un numero valido")
-
-# Menu de personalizacion de caracteres
-def personalizar_caracteres():
-    print("\n" + "="*40)
-    print("PERSONALIZACION DE CARACTERES")
-    print("="*40)
-    
-    opciones = {
-        'mayusculas': False,
-        'minusculas': False,
-        'digitos': False,
-        'especiales': False
-    }
-    
-    while True:
-        print("\nSeleccione los tipos de caracteres a incluir:")
-        print("="*30)
-        print(f"1. Letras MAYUSCULAS [{'X' if opciones['mayusculas'] else ' '}]")
-        print(f"2. Letras minusculas [{'X' if opciones['minusculas'] else ' '}]")
-        print(f"3. Digitos (0-9) [{'X' if opciones['digitos'] else ' '}]")
-        print(f"4. Caracteres especiales [{'X' if opciones['especiales'] else ' '}]")
-        print("5. SELECCIONAR TODO")
-        print("6. LIMPIAR SELECCION")
-        print("7. FINALIZAR y GENERAR")
-        print("="*30)
+class GeneradorContraseniaApp:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Generador de Contrasenias Seguras")
+        self.root.geometry("500x550")
         
-        # Mostrar estadisticas actuales
-        tipos_seleccionados = sum(opciones.values())
-        if tipos_seleccionados > 0:
-            print(f"\nTipos seleccionados: {tipos_seleccionados}/4")
+        # Variables de control
+        self.longitud_var = tk.IntVar(value=12)
+        self.mayusculas_var = tk.BooleanVar(value=True)
+        self.minusculas_var = tk.BooleanVar(value=True)
+        self.digitos_var = tk.BooleanVar(value=True)
+        self.especiales_var = tk.BooleanVar(value=True)
+        self.contrasenia_var = tk.StringVar()
         
+        # Crear interfaz
+        self.crear_interfaz()
+        
+        # Generar primera contrasenia al iniciar
+        self.generar_contrasenia()
+    
+    def crear_interfaz(self):
+        """Crear todos los elementos de la interfaz"""
+        
+        # Frame principal con padding
+        main_frame = ttk.Frame(self.root, padding="15")
+        main_frame.pack(fill=tk.BOTH, expand=True)
+        
+        # Título
+        title_label = tk.Label(
+            main_frame,
+            text="GENERADOR DE CONTRASENIAS SEGURAS",
+            font=('Arial', 16, 'bold')
+        )
+        title_label.pack(pady=(0, 15))
+        
+        # Separador
+        ttk.Separator(main_frame, orient='horizontal').pack(fill='x', pady=5)
+        
+        # ========== SECCIÓN 1: LONGITUD ==========
+        longitud_frame = ttk.LabelFrame(main_frame, text="1. Longitud", padding="10")
+        longitud_frame.pack(fill='x', pady=(0, 10))
+        
+        # Slider para longitud
+        longitud_slider = tk.Scale(
+            longitud_frame,
+            from_=8,
+            to=128,
+            orient=tk.HORIZONTAL,
+            variable=self.longitud_var,
+            length=350
+        )
+        longitud_slider.pack()
+        
+        # Label para mostrar longitud actual
+        self.longitud_label = tk.Label(
+            longitud_frame,
+            text=f"Longitud: {self.longitud_var.get()} caracteres",
+            font=('Arial', 10, 'bold')
+        )
+        self.longitud_label.pack(pady=(5, 0))
+        
+        # ========== SECCIÓN 2: TIPOS DE CARACTERES ==========
+        tipos_frame = ttk.LabelFrame(main_frame, text="2. Tipos de caracteres", padding="10")
+        tipos_frame.pack(fill='x', pady=(0, 10))
+        
+        # Checkbuttons para tipos de caracteres
+        tipos_opciones = [
+            ("Letras MAYUSCULAS (A-Z)", self.mayusculas_var),
+            ("Letras minusculas (a-z)", self.minusculas_var),
+            ("Digitos (0-9)", self.digitos_var),
+            ("Caracteres especiales (!@#$%...)", self.especiales_var)
+        ]
+        
+        for texto, variable in tipos_opciones:
+            cb = ttk.Checkbutton(tipos_frame, text=texto, variable=variable)
+            cb.pack(anchor='w', pady=2)
+        
+        # Botones rápidos
+        botones_frame = ttk.Frame(tipos_frame)
+        botones_frame.pack(pady=(10, 0))
+        
+        btn_todo = ttk.Button(
+            botones_frame,
+            text="SELECCIONAR TODO",
+            command=self.seleccionar_todo
+        )
+        btn_todo.pack(side='left', padx=5)
+        
+        btn_limpiar = ttk.Button(
+            botones_frame,
+            text="LIMPIAR SELECCION",
+            command=self.limpiar_seleccion
+        )
+        btn_limpiar.pack(side='left', padx=5)
+        
+        # ========== SECCIÓN 3: CONTRASEÑA GENERADA ==========
+        contrasenia_frame = ttk.LabelFrame(main_frame, text="3. Contrasenia generada", padding="10")
+        contrasenia_frame.pack(fill='x', pady=(0, 10))
+        
+        # Campo para mostrar contrasenia (más grande y con scroll si es necesario)
+        contrasenia_entry = tk.Entry(
+            contrasenia_frame,
+            textvariable=self.contrasenia_var,
+            font=('Courier', 12, 'bold'),
+            justify='center',
+            state='readonly'
+        )
+        contrasenia_entry.pack(fill='x', pady=(0, 10), ipady=8)
+        
+        # Botón para copiar
+        btn_copiar = ttk.Button(
+            contrasenia_frame,
+            text="COPIAR AL PORTAPAPELES",
+            command=self.copiar_portapapeles
+        )
+        btn_copiar.pack()
+        
+        # ========== SECCIÓN 4: BOTONES DE ACCIÓN ==========
+        acciones_frame = ttk.Frame(main_frame)
+        acciones_frame.pack(pady=(10, 0))
+        
+        # Botón generar
+        btn_generar = ttk.Button(
+            acciones_frame,
+            text="GENERAR NUEVA CONTRASENIA",
+            command=self.generar_contrasenia
+        )
+        btn_generar.pack(side='left', padx=5)
+        
+        # Botón salir
+        btn_salir = ttk.Button(
+            acciones_frame,
+            text="SALIR",
+            command=self.root.quit
+        )
+        btn_salir.pack(side='left', padx=5)
+        
+        # ========== SECCIÓN 5: INFORMACIÓN ==========
+        info_frame = ttk.LabelFrame(main_frame, text="Informacion", padding="10")
+        info_frame.pack(fill='x', pady=(10, 0))
+        
+        info_text = "• Contrasenia generada aleatoriamente\n• Cuantos mas tipos seleccione, mas segura sera\n• Recomendado: usar todos los tipos + 12+ caracteres"
+        
+        info_label = tk.Label(
+            info_frame,
+            text=info_text,
+            justify=tk.LEFT
+        )
+        info_label.pack()
+    
+    def actualizar_longitud_label(self):
+        """Actualizar el label de longitud"""
+        self.longitud_label.config(text=f"Longitud: {self.longitud_var.get()} caracteres")
+        self.generar_contrasenia()
+    
+    def seleccionar_todo(self):
+        """Seleccionar todos los tipos de caracteres"""
+        self.mayusculas_var.set(True)
+        self.minusculas_var.set(True)
+        self.digitos_var.set(True)
+        self.especiales_var.set(True)
+        self.generar_contrasenia()
+    
+    def limpiar_seleccion(self):
+        """Limpiar toda la selección"""
+        self.mayusculas_var.set(False)
+        self.minusculas_var.set(False)
+        self.digitos_var.set(False)
+        self.especiales_var.set(False)
+        self.generar_contrasenia()
+    
+    def generar_contrasenia(self):
+        """Generar una nueva contraseña"""
+        # Verificar que al menos un tipo esté seleccionado
+        if not (self.mayusculas_var.get() or self.minusculas_var.get() or 
+                self.digitos_var.get() or self.especiales_var.get()):
+            messagebox.showwarning("Advertencia", 
+                "Debe seleccionar al menos un tipo de caracteres.\nSe usaran todos por defecto.")
+            self.seleccionar_todo()
+            return
+        
+        # Construir cadena de caracteres permitidos
+        caracteres = ""
+        if self.mayusculas_var.get():
+            caracteres += string.ascii_uppercase
+        if self.minusculas_var.get():
+            caracteres += string.ascii_lowercase
+        if self.digitos_var.get():
+            caracteres += string.digits
+        if self.especiales_var.get():
+            caracteres += string.punctuation
+        
+        # Generar contraseña
         try:
-            seleccion = input("\nIngrese su opcion (1-7): ").strip()
+            longitud = self.longitud_var.get()
+            if not caracteres:
+                raise ValueError("No hay caracteres disponibles")
             
-            if seleccion == "1":
-                opciones['mayusculas'] = not opciones['mayusculas']
-                estado = "activadas" if opciones['mayusculas'] else "desactivadas"
-                print(f"> Mayusculas {estado}")
-                
-            elif seleccion == "2":
-                opciones['minusculas'] = not opciones['minusculas']
-                estado = "activadas" if opciones['minusculas'] else "desactivadas"
-                print(f"> Minusculas {estado}")
-                
-            elif seleccion == "3":
-                opciones['digitos'] = not opciones['digitos']
-                estado = "activados" if opciones['digitos'] else "desactivados"
-                print(f"> Digitos {estado}")
-                
-            elif seleccion == "4":
-                opciones['especiales'] = not opciones['especiales']
-                estado = "activados" if opciones['especiales'] else "desactivados"
-                print(f"> Especiales {estado}")
-                
-            elif seleccion == "5":
-                for key in opciones:
-                    opciones[key] = True
-                print("> Todos los tipos activados")
-                
-            elif seleccion == "6":
-                for key in opciones:
-                    opciones[key] = False
-                print("> Seleccion limpiada")
-                
-            elif seleccion == "7":
-                # Construir la cadena de caracteres
-                caracteres_disponibles = ""
-                
-                if opciones['mayusculas']:
-                    caracteres_disponibles += string.ascii_uppercase
-                if opciones['minusculas']:
-                    caracteres_disponibles += string.ascii_lowercase
-                if opciones['digitos']:
-                    caracteres_disponibles += string.digits
-                if opciones['especiales']:
-                    caracteres_disponibles += string.punctuation
-                
-                # Verificar seleccion
-                if not caracteres_disponibles:
-                    print("\n! ADVERTENCIA: No ha seleccionado ningun tipo de caracteres.")
-                    print("Se usaran todos los tipos por defecto.")
-                    caracteres_disponibles = string.ascii_letters + string.digits + string.punctuation
-                    return caracteres_disponibles
-                
-                # Mostrar resumen
-                print("\n" + "-"*30)
-                print("RESUMEN DE SELECCION:")
-                if opciones['mayusculas']:
-                    print(f"- MAYUSCULAS: {len(string.ascii_uppercase)} caracteres")
-                if opciones['minusculas']:
-                    print(f"- minusculas: {len(string.ascii_lowercase)} caracteres")
-                if opciones['digitos']:
-                    print(f"- Digitos: {len(string.digits)} caracteres")
-                if opciones['especiales']:
-                    print(f"- Especiales: {len(string.punctuation)} caracteres")
-                print(f"\nTotal combinaciones: {len(caracteres_disponibles)} caracteres")
-                print("-"*30)
-                
-                return caracteres_disponibles
-                
-            else:
-                print("Opcion no valida. Intente de nuevo (1-7).")
-                
-        except KeyboardInterrupt:
-            print("\n\nOperacion cancelada por el usuario.")
-            exit()
+            contrasenia = ''.join(random.choice(caracteres) for _ in range(longitud))
+            self.contrasenia_var.set(contrasenia)
+            
         except Exception as e:
-            print(f"Error inesperado: {e}")
-
-# Programa principal
-def main():
-    print("="*40)
-    print("GENERADOR DE CONTRASENIAS SEGURAS")
-    print("="*40)
+            messagebox.showerror("Error", f"No se pudo generar la contrasenia: {str(e)}")
     
-    # Obtener longitud
-    longitud = obtener_longitud()
-    
-    # Personalizar caracteres
-    caracteres = personalizar_caracteres()
-    
-    # Generar la contrasenia
-    print("\nGenerando contrasenia...")
-    contrasenia = ''.join(random.choice(caracteres) for i in range(longitud))
-    
-    # Mostrar resultado
-    print("\n" + "="*40)
-    print("RESULTADO")
-    print("="*40)
-    print(f"Longitud: {longitud} caracteres")
-    print(f"Caracteres posibles: {len(caracteres)}")
-    print("-"*40)
-    print(f"\nCONTRASENIA GENERADA:")
-    print(f"> {contrasenia}")
-    print("-"*40)
-    
-    # Opcion para copiar o regenerar
-    while True:
-        print("\nOpciones:")
-        print("1. Generar otra contrasenia con misma configuracion")
-        print("2. Iniciar nueva configuracion")
-        print("3. Salir")
-        
-        opcion = input("\nSeleccione opcion (1-3): ").strip()
-        
-        if opcion == "1":
-            nueva_contrasenia = ''.join(random.choice(caracteres) for i in range(longitud))
-            print(f"\nNueva contrasenia: {nueva_contrasenia}")
-        elif opcion == "2":
-            print("\n" + "="*40)
-            main()  # Reiniciar programa
-            break
-        elif opcion == "3":
-            print("\nGracias por usar el generador. ¡Hasta luego!")
-            break
+    def copiar_portapapeles(self):
+        """Copiar la contraseña al portapapeles"""
+        contrasenia = self.contrasenia_var.get()
+        if contrasenia:
+            self.root.clipboard_clear()
+            self.root.clipboard_append(contrasenia)
+            messagebox.showinfo("Copiado", "Contrasenia copiada al portapapeles")
         else:
-            print("Opcion no valida. Intente de nuevo.")
+            messagebox.showwarning("Advertencia", "No hay contrasenia para copiar")
 
-# Ejecutar programa
-if __name__ == "__main__":
+def main():
+    """Función principal para iniciar la aplicación"""
     try:
-        main()
-    except KeyboardInterrupt:
-        print("\n\nPrograma terminado por el usuario.")
+        root = tk.Tk()
+        app = GeneradorContraseniaApp(root)
+        
+        # Centrar ventana en pantalla
+        root.update_idletasks()
+        ancho = root.winfo_width()
+        alto = root.winfo_height()
+        x = (root.winfo_screenwidth() // 2) - (ancho // 2)
+        y = (root.winfo_screenheight() // 2) - (alto // 2)
+        root.geometry(f'+{x}+{y}')
+        
+        # Iniciar loop principal
+        root.mainloop()
+        
+    except Exception as e:
+        print(f"Error al iniciar la aplicacion: {e}")
+
+if __name__ == "__main__":
+    main()
