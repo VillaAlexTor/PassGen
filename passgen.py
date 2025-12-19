@@ -1,6 +1,7 @@
 import random 
 import string
 
+
 # Validacion de entrada
 def obtener_longitud():
     while True:
