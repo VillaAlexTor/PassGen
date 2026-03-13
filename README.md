@@ -14,27 +14,43 @@ PassGen es una aplicación de escritorio diseñada para generar contraseñas rob
 - **Copia Rápida:** Botón dedicado para copiar la contraseña generada al portapapeles.
 - **Diseño Moderno:** Ventana centrada y organizada para una mejor experiencia de usuario.
 
-## Herramientas Utilizadas
+## Versión Web (GitHub Pages)
 
-- **Lenguaje:** Python 3
-- **Interfaz Gráfica (GUI):** `tkinter` y `tkinter.ttk`.
-- **Seguridad:** Módulo `secrets` para generación de números aleatorios criptográficamente seguros.
+He desarrollado una versión web moderna y segura que puedes alojar en **GitHub Pages**.
 
-## Seguridad (Punto Crítico)
+- **URL del sitio:** `https://tu-usuario.github.io/PassGen` (sustituye `tu-usuario`)
+- **Seguridad Web:** Utiliza `window.crypto.getRandomValues()` para asegurar la misma robustez que la versión de escritorio.
+- **Tecnologías:** HTML5, CSS3 (Glassmorphism), JavaScript Vanilla.
 
-La seguridad es la prioridad de este proyecto. A diferencia de otros generadores que utilizan el módulo `random` (el cual es determinista y no apto para seguridad), PassGen utiliza el módulo **`secrets`** de Python.
+## Stack — Tecnologías
 
-> [!IMPORTANT]
-> El módulo `secrets` se utiliza para generar números aleatorios criptográficamente fuertes adecuados para gestionar datos como contraseñas, autenticación de cuentas, tokens de seguridad y secretos relacionados. Esto garantiza que las contraseñas generadas sean prácticamente imposibles de predecir.
+- **Frontend Web:** HTML5 Semántico, CSS3 Vanilla (Estilo Dark/Minimalista), JavaScript ES6+ (Mobile-First).
+- **Desktop (GUI):** Python 3 con librerías estándar `tkinter` y `tkinter.ttk`.
+- **Workflow & Deploy:** VS Code, Git/GitHub, GitHub Pages (Hosting web robusto y estático).
+
+## Seguridad
+
+- **API Web Crypto:** Uso exclusivo de `window.crypto.getRandomValues()` en el navegador, asegurando la máxima entropía y un CSPRNG (Generador de Números Pseudoaleatorios Criptográficamente Seguro) robusto frente a predicción algorítmica.
+- **Criptografía Fuerte (Desktop):** Implementación del módulo nativo `secrets` de Python, diseñado para gestionar datos críticos como contraseñas, descartando el método obsoleto y vulnerable `random`.
+- **Ejecución 100% Local (Zero-Knowledge):** Toda la generación y ciclo de vida de la contraseña transcurre únicamente de forma local en el cliente/usuario final. No hay peticiones a servidores (Zero-Backend), sin almacenamiento en bases de datos o cookies, haciéndolo inmune a intercepción (Man-in-the-Middle).
 
 ## Instalación y Uso
 
-1. Asegúrate de tener Python instalado en tu sistema.
-2. Clona este repositorio o descarga el archivo `passgen.py`.
-3. Ejecuta la aplicación desde la terminal:
-   ```bash
-   python passgen.py
-   ```
+### Versión de Escritorio
+1. Asegúrate de tener Python instalado.
+2. Ejecuta: `python passgen.py`
+
+### Versión Web (Local)
+1. Abre el archivo `index.html` en cualquier navegador moderno.
+
+## Cómo desplegar en GitHub Pages
+
+1. Sube todos los archivos (`index.html`, `style.css`, `script.js`, `passgen.py`, etc.) a tu repositorio de GitHub.
+2. Ve a la pestaña **Settings** (Configuración) de tu repositorio.
+3. En el menú lateral, selecciona **Pages**.
+4. En la sección "Build and deployment", asegúrate de que **Source** sea "Deploy from a branch".
+5. Selecciona la rama `main` (o la que estés usando) y la carpeta `/ (root)`.
+6. Haz clic en **Save**. ¡Tu sitio estará listo en unos minutos!
 
 ## Recomendaciones para una Contraseña Segura
 
