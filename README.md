@@ -18,17 +18,15 @@ PassGen es una aplicación de escritorio diseñada para generar contraseñas rob
 
 ## Versión Web (GitHub Pages)
 
-He desarrollado una versión web moderna y segura que puedes alojar en **GitHub Pages**.
-
-- **URL del sitio:** `https://tu-usuario.github.io/PassGen` (sustituye `tu-usuario`)
+- **URL del sitio:** `https://villaAlexTor.github.io/PassGen`
 - **Seguridad Web:** Utiliza `window.crypto.getRandomValues()` para asegurar la misma robustez que la versión de escritorio.
-- **Tecnologías:** HTML5, CSS3 (Glassmorphism), JavaScript Vanilla.
+- **Tecnologías:** HTML5, CSS3, JavaScript Vanilla.
 
 ## Stack — Tecnologías
 
-- **Frontend Web:** HTML5 Semántico, CSS3 Vanilla (Estilo Dark/Minimalista), JavaScript ES6+ (Mobile-First).
+- **Frontend Web:** HTML5 Semántico, CSS3 Vanilla, JavaScript ES6+ Mobile-First.
 - **Desktop (GUI):** Python 3 con librerías estándar `tkinter` y `tkinter.ttk`.
-- **Workflow & Deploy:** VS Code, Git/GitHub, GitHub Pages (Hosting web robusto y estático).
+- **Workflow & Deploy:** VS Code, Git/GitHub, GitHub Pages.
 
 ## Seguridad
 
@@ -45,20 +43,8 @@ He desarrollado una versión web moderna y segura que puedes alojar en **GitHub 
 ### Versión Web (Local)
 1. Abre el archivo `index.html` en cualquier navegador moderno.
 
-## Cómo desplegar en GitHub Pages
-
-1. Sube todos los archivos (`index.html`, `style.css`, `script.js`, `passgen.py`, etc.) a tu repositorio de GitHub.
-2. Ve a la pestaña **Settings** (Configuración) de tu repositorio.
-3. En el menú lateral, selecciona **Pages**.
-4. En la sección "Build and deployment", asegúrate de que **Source** sea "Deploy from a branch".
-5. Selecciona la rama `main` (o la que estés usando) y la carpeta `/ (root)`.
-6. Haz clic en **Save**. ¡Tu sitio estará listo en unos minutos!
-
 ## Recomendaciones para una Contraseña Segura
 
 - Utiliza al menos **12 caracteres**.
 - Combina **todos los tipos de caracteres** (mayúsculas, minúsculas, números y símbolos).
 - No compartas tus contraseñas y cámbialas periódicamente.
-
----
-*Desarrollado con enfoque en la seguridad y facilidad de uso.*
