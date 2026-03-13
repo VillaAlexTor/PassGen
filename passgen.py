@@ -1,4 +1,4 @@
-import random 
+import secrets 
 import string
 import tkinter as tk
 from tkinter import messagebox
@@ -169,7 +169,7 @@ class GeneradorContraseniaApp:
             longitud = self.longitud_var.get()
             if not caracteres:
                 raise ValueError("No hay caracteres disponibles")
-            contrasenia = ''.join(random.choice(caracteres) for _ in range(longitud))
+            contrasenia = ''.join(secrets.choice(caracteres) for _ in range(longitud))
             self.contrasenia_var.set(contrasenia)
         except Exception as e:
             messagebox.showerror("Error", f"No se pudo generar la contrasenia: {str(e)}")

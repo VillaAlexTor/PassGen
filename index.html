@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PassGen - Generador de Contraseñas Seguras</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@500;700&family=Outfit:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>PassGen</h1>
+        <p class="subtitle">Generador de Contraseñas Criptográficamente Seguras</p>
+
+        <div class="result-container">
+            <span id="password-display">Cargando...</span>
+            <button id="copy-btn" class="icon-btn" title="Copiar al portapapeles">
+                <i data-lucide="copy"></i>
+            </button>
+        </div>
+
+        <div class="setting-group">
+            <div class="label-row">
+                <label for="length">Longitud de contraseña</label>
+                <span id="length-val" class="length-val">16</span>
+            </div>
+            <input type="range" id="length" min="8" max="128" value="16">
+        </div>
+
+        <div class="options-grid">
+            <label class="checkbox-container">
+                <input type="checkbox" id="uppercase" checked>
+                Mayúsculas (A-Z)
+            </label>
+            <label class="checkbox-container">
+                <input type="checkbox" id="lowercase" checked>
+                Minúsculas (a-z)
+            </label>
+            <label class="checkbox-container">
+                <input type="checkbox" id="numbers" checked>
+                Números (0-9)
+            </label>
+            <label class="checkbox-container">
+                <input type="checkbox" id="symbols" checked>
+                Símbolos (!@#$...)
+            </label>
+        </div>
+
+        <button id="generate-btn" class="btn-primary">
+            GENERAR CONTRASEÑA
+        </button>
+
+        <div class="security-badge">
+            <i data-lucide="shield-check" size="18"></i>
+            Protección mediante window.crypto
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // Inicializar iconos de Lucide
+        lucide.createIcons();
+    </script>
+</body>
+</html>
