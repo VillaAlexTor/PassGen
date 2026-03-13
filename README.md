@@ -18,7 +18,7 @@ PassGen es una aplicación de escritorio diseñada para generar contraseñas rob
 
 ## Versión Web (GitHub Pages)
 
-- **URL del sitio:** `https://villaAlexTor.github.io/PassGen`
+- **URL del sitio:** [https://villaalextor.github.io/PassGen/](https://villaalextor.github.io/PassGen/)
 - **Seguridad Web:** Utiliza `window.crypto.getRandomValues()` para asegurar la misma robustez que la versión de escritorio.
 - **Tecnologías:** HTML5, CSS3, JavaScript Vanilla.
 
