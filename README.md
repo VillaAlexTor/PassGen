@@ -1,5 +1,7 @@
 # PassGen - Generador de Contraseñas Seguras
 
+![PassGen Web Preview](assets/webapp.png)
+
 PassGen es una aplicación de escritorio diseñada para generar contraseñas robustas y seguras de manera sencilla. Utiliza una interfaz gráfica intuitiva construida con Python para facilitar su uso a cualquier persona.
 
 ## Características
